@@ -1,13 +1,21 @@
 ﻿using System;
+using Amazon.Lambda.Core;
 using DogWatch.Types;
 
 namespace DogWatch
 {
     public class DogMetrics : IMetrics
     {
-        public void Counter<T>(string statName, T value, double sampleRate = 1, params StatTag[] tags)
+        private readonly ILambdaLogger _logger;
+
+        public DogMetrics(ILambdaLogger logger)
         {
-            throw new NotImplementedException();
+            _logger = logger;
+        }
+
+        public void Counter(string statName, long value, double sampleRate = 1, params StatTag[] tags)
+        {
+            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|count|{statName}");
         }
 
         public void Increment(string statName, double sampleRate = 1, params StatTag[] tags)
@@ -20,22 +28,19 @@ namespace DogWatch
             throw new NotImplementedException();
         }
 
-        public void Gauge<T>(string statName, T value, double sampleRate = 1, params StatTag[] tags)
+        public void Gauge(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {
             throw new NotImplementedException();
         }
 
-        public void Histogram<T>(string statName, T value, double sampleRate = 1, params StatTag[] tags)
+        public void Histogram(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {
             throw new NotImplementedException();
         }
 
-        public void Set<T>(string statName, T value, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
+        //TODO: Could the methods from here on be extensions?
 
-        public void Timer<T>(string statName, T value, double sampleRate = 1, params StatTag[] tags)
+        public void Timer(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {
             throw new NotImplementedException();
         }
