@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Amazon.Lambda.Core;
 using DogWatch.Types;
 
@@ -6,6 +7,12 @@ namespace DogWatch
 {
     public class DogMetrics : IMetrics
     {
+        private const string CounterStatType = "count";
+        private const string GaugeStatType = "gauge";
+        private const string HistogramStatType = "histogram";
+        private const string CheckStatType = "check";
+
+
         private readonly ILambdaLogger _logger;
 
         public DogMetrics(ILambdaLogger logger)
@@ -13,24 +20,31 @@ namespace DogWatch
             _logger = logger;
         }
 
+        private void LogMetric(string statName, string statType, string value)
+        {
+            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|{statType}|{statName}|");
+        }
+
         public void Counter(string statName, long value, double sampleRate = 1, params StatTag[] tags)
         {
-            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|count|{statName}");
+            LogMetric(statName, CounterStatType, value.ToString());
         }
 
         public void Gauge(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {
-            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|gauge|{statName}");
+            LogMetric(statName, GaugeStatType, value.ToString(CultureInfo.InvariantCulture));
         }
 
         public void Histogram(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {
-            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|histogram|{statName}");
+            LogMetric(statName, HistogramStatType, value.ToString(CultureInfo.InvariantCulture));
         }
 
         public void Check(string statName, ServiceCheck value, double sampleRate = 1, params StatTag[] tags)
         {
-            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{(int)value}|check|{statName}");
+            var enumVal = (int) value;
+
+            LogMetric(statName, CheckStatType, enumVal.ToString());
         }
 
         //TODO: Could the methods from here on be extensions?

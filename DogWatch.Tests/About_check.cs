@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Amazon.Lambda.Core;
+using DogWatch.Types;
 using Moq;
 using Xunit;
 
 namespace DogWatch.Tests
 {
-    public class About_counter
+    public class About_check
     {
         [Fact]
         public void it_contains_the_monitoring_command_string()
@@ -18,7 +19,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Check("mystat", ServiceCheck.Ok);
 
             Assert.True(logs.Count == 1);
             Assert.True(logs.First().Contains("MONITORING"),
@@ -36,7 +37,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Check("mystat", ServiceCheck.Ok);
 
             var currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             Assert.True(logs.Count == 1);
@@ -45,11 +46,11 @@ namespace DogWatch.Tests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(100)]
-        [InlineData(-1)]
-        [InlineData(0)]
-        public void it_contains_the_given_value(long value)
+        [InlineData(ServiceCheck.Ok, 0)]
+        [InlineData(ServiceCheck.Warning, 1)]
+        [InlineData(ServiceCheck.Critical, 2)]
+        [InlineData(ServiceCheck.Unknown, 3)]
+        public void it_contains_the_given_value(ServiceCheck checkValue, int expectedValue)
         {
             var logs = new List<string>();
             var contextMock = new Mock<ILambdaLogger>(MockBehavior.Strict);
@@ -57,11 +58,11 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", value);
+            metrics.Check("mystat", checkValue);
 
             Assert.True(logs.Count == 1);
-            Assert.True(logs.First().Contains($"|{value}|"),
-                $@"Expected the given stat value: ""|{value}|"" but couldn't find it in <{logs.First()}>");
+            Assert.True(logs.First().Contains($"|{expectedValue}|"),
+                $@"Expected the given stat value: ""|{expectedValue}|"" but couldn't find it in <{logs.First()}>");
         }
 
         [Fact]
@@ -73,11 +74,11 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Check("mystat", ServiceCheck.Ok);
 
             Assert.True(logs.Count == 1);
-            Assert.True(logs.First().Contains("|count|"),
-                $@"Expected the given stat type: ""|count|"" but couldn't find it in <{logs.First()}>");
+            Assert.True(logs.First().Contains("|check|"),
+                $@"Expected the given stat type: ""|check|"" but couldn't find it in <{logs.First()}>");
         }
 
         [Fact]
@@ -89,7 +90,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Check("mystat", ServiceCheck.Ok);
 
             Assert.True(logs.Count == 1);
             Assert.True(logs.First().Contains("|mystat|"),

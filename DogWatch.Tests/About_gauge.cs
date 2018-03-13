@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Amazon.Lambda.Core;
@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DogWatch.Tests
 {
-    public class About_counter
+    public class About_gauge
     {
         [Fact]
         public void it_contains_the_monitoring_command_string()
@@ -18,7 +18,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Gauge("mystat", 1);
 
             Assert.True(logs.Count == 1);
             Assert.True(logs.First().Contains("MONITORING"),
@@ -36,7 +36,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Gauge("mystat", 1);
 
             var currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             Assert.True(logs.Count == 1);
@@ -57,7 +57,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", value);
+            metrics.Gauge("mystat", value);
 
             Assert.True(logs.Count == 1);
             Assert.True(logs.First().Contains($"|{value}|"),
@@ -73,11 +73,11 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Gauge("mystat", 1);
 
             Assert.True(logs.Count == 1);
-            Assert.True(logs.First().Contains("|count|"),
-                $@"Expected the given stat type: ""|count|"" but couldn't find it in <{logs.First()}>");
+            Assert.True(logs.First().Contains("|gauge|"),
+                $@"Expected the given stat type: ""|gauge|"" but couldn't find it in <{logs.First()}>");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace DogWatch.Tests
                        .Callback((string s) => logs.Add(s));
 
             var metrics = new DogMetrics(contextMock.Object);
-            metrics.Counter("mystat", 1);
+            metrics.Gauge("mystat", 1);
 
             Assert.True(logs.Count == 1);
             Assert.True(logs.First().Contains("|mystat|"),
