@@ -2,13 +2,18 @@
 {
     public class StatTag
     {
-        public string Name { get; set; }
+        private readonly string _name;
+        private readonly object _value;
 
-        public object Value { get; set; }
+        public StatTag(string name, object value = null)
+        {
+            _name = name;
+            _value = value;
+        }
 
         public override string ToString()
-        {
-            return $"{Name}:{Value}";
-        }
+            => _value != null
+                ? $"{_name}:{_value}"
+                : $"{_name}";
     }
 }
