@@ -15,6 +15,8 @@ namespace DogWatch
 
         void Histogram(string statName, double value, double sampleRate = 1.0, params StatTag[] tags);
 
+        void Check(string statName, ServiceCheck value, double sampleRate = 1.0, params StatTag[] tags);
+
         void Timer(string statName, double value, double sampleRate = 1.0, params StatTag[] tags);
 
         IDisposable StartTimer(string name, double sampleRate = 1.0, params StatTag[] tags);

@@ -18,6 +18,22 @@ namespace DogWatch
             _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|count|{statName}");
         }
 
+        public void Gauge(string statName, double value, double sampleRate = 1, params StatTag[] tags)
+        {
+            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|gauge|{statName}");
+        }
+
+        public void Histogram(string statName, double value, double sampleRate = 1, params StatTag[] tags)
+        {
+            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{value}|histogram|{statName}");
+        }
+
+        public void Check(string statName, ServiceCheck value, double sampleRate = 1, params StatTag[] tags)
+        {
+            _logger.LogLine($"MONITORING|{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}|{(int)value}|check|{statName}");
+        }
+
+        //TODO: Could the methods from here on be extensions?
         public void Increment(string statName, double sampleRate = 1, params StatTag[] tags)
         {
             throw new NotImplementedException();
@@ -27,18 +43,6 @@ namespace DogWatch
         {
             throw new NotImplementedException();
         }
-
-        public void Gauge(string statName, double value, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Histogram(string statName, double value, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        //TODO: Could the methods from here on be extensions?
 
         public void Timer(string statName, double value, double sampleRate = 1, params StatTag[] tags)
         {

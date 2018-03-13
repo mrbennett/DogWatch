@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DogWatch.Tests
 {
-    public class UnitTest1
+    public class About_counter
     {
         [Fact]
         public void it_contains_the_monitoring_command_string()
@@ -76,8 +76,8 @@ namespace DogWatch.Tests
             metrics.Counter("mystat", 1);
 
             Assert.True(logs.Count == 1);
-            Assert.True(logs.First().Contains($"|count|"),
-                $@"Expected the given stat value: ""|count|"" but couldn't find it in <{logs.First()}>");
+            Assert.True(logs.First().Contains("|count|"),
+                $@"Expected the given stat type: ""|count|"" but couldn't find it in <{logs.First()}>");
         }
 
         [Fact]
@@ -92,8 +92,8 @@ namespace DogWatch.Tests
             metrics.Counter("mystat", 1);
 
             Assert.True(logs.Count == 1);
-            Assert.True(logs.First().Contains($"|mystat"),
-                $@"Expected the given stat value: ""|mystat"" but couldn't find it in <{logs.First()}>");
+            Assert.True(logs.First().Contains("|mystat"),
+                $@"Expected the given stat name: ""|mystat"" but couldn't find it in <{logs.First()}>");
         }
     }
 }
