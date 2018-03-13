@@ -8,6 +8,8 @@ namespace DogWatch
 {
     public class DogMetrics : IMetrics
     {
+        //TODO: Common tags?
+
         private const string CounterStatType = "count";
         private const string GaugeStatType = "gauge";
         private const string HistogramStatType = "histogram";
@@ -53,32 +55,6 @@ namespace DogWatch
             var enumVal = (int) value;
 
             LogMetric(statName, CheckStatType, enumVal.ToString(), sampleRate, tags);
-        }
-
-        //TODO: Could the methods from here on be extensions?
-        public void Increment(string statName, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Decrement(string statName, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Timer(string statName, double value, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDisposable StartTimer(string name, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T Time<T>(Func<T> func, string statName, double sampleRate = 1, params StatTag[] tags)
-        {
-            throw new NotImplementedException();
         }
     }
 }

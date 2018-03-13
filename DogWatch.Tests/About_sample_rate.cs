@@ -10,7 +10,6 @@ namespace DogWatch.Tests
 {
     public class About_sample_rate
     {
-        //TODO: If you have busy lambdas you may not want to log every metrics
         [Fact]
         public void sample_rate_of_1_always_sends_it()
         {
